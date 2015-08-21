@@ -61,9 +61,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TableModel\Account.TableModel.csproj">
       <Project>{e9f21f01-33e0-4c09-a37f-420cf290b547}</Project>
       <Name>Account.TableModel</Name>
