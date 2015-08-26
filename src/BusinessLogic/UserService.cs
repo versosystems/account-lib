@@ -1,4 +1,5 @@
-﻿using Account.DataRepository;
+﻿using System.Linq;
+using Account.DataRepository;
 using UsersDataModel = Account.DataModel;
 using TableDataModel = Account.TableModel;
 
@@ -12,6 +13,10 @@ namespace Generic.BusinessLogic.User
         void UpdateUser(UsersDataModel.User user);
 
         void DisableUser(UsersDataModel.User user);
+
+        bool DoesUserExist(UsersDataModel.User user);
+
+        UsersDataModel.User GetUserByUsername(string username);
     }
 
     public class UserService : IUserService
@@ -20,6 +25,26 @@ namespace Generic.BusinessLogic.User
         public UserService()
         { 
             _userRepository = new UserRepository();
+        }
+
+        public UserService(UserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public UsersDataModel.User GetUserByUsername(string username)
+        {
+            var user = _userRepository.Find(a => a.Username == username).FirstOrDefault();
+
+            return new UsersDataModel.User
+            {
+                Email = user.Email,
+                FirstName = user.FirstName,
+                IsActive = user.IsActive,
+                LastName = user.LastName,
+                Username = user.Username,
+                PasswordHash = user.PasswordHash
+            };
         }
 
         public UsersDataModel.User GetUser(UsersDataModel.User user)
@@ -66,6 +91,11 @@ namespace Generic.BusinessLogic.User
 
             //_userRepository.Update();
             _userRepository.Save();
+        }
+
+        public bool DoesUserExist(UsersDataModel.User user)
+        {
+            return GetUser(user) == null ? false : true;
         }
     }
 }

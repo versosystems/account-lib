@@ -6,8 +6,6 @@ namespace Account.BusinessLogic
     public interface IRegistrationService
     {
         void Register(string username, string firstname, string lastname, string password, string email);
-
-        bool DoesUserExist(UsersDataModel.User user);
     }
 
     public class RegistrationService : IRegistrationService
@@ -18,19 +16,17 @@ namespace Account.BusinessLogic
             _userService = new UserService();
         }
 
-        public bool DoesUserExist(UsersDataModel.User user)
-        {
-            return _userService.GetUser(user) == null ? false : true;
-        }
-
         public void Register(string username, string firstname, string lastname, string password, string email)
         {
+            // Hash the password
+            var hashedPassword = Hasher.CreateHash(password);
+
             var existUser = new UsersDataModel.User
             {
                 Email = email,
                 LastName = lastname,
                 FirstName = firstname,
-                PasswordHash = password,
+                PasswordHash = hashedPassword,
                 Username = username
             };
 
