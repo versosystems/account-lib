@@ -31,7 +31,7 @@ namespace Account.BusinessLogic
             };
 
             // fail safe in case someone has registered this account after the register check user has been called.
-            if (_userService.GetUser(existUser) == null)
+            if (_userService.GetUserByUsername(existUser.Username) == null)
             {
                 _userService.AddUser(existUser);
             }

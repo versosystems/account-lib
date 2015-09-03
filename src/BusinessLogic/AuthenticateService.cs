@@ -27,7 +27,7 @@ namespace Generic.BusinessLogic.Authentication
                 var hashedPassword = Hasher.GetHash(userSuppliedPassword, user.PasswordHash);
                 // todo validate islocked out, 
                 // todo validate is temp lockout due to login from location not in user typical region
-                isAuth = user.IsActive && AuthenticationHelper.ComparePasswords(user.PasswordHash, hashedPassword);
+                isAuth = user.IsActive && AuthHelper.ComparePasswords(user.PasswordHash, hashedPassword);
             }
 
             return isAuth;

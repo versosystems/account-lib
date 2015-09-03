@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Account.DataRepository;
 using UsersDataModel = Account.DataModel;
 using TableDataModel = Account.TableModel;
@@ -7,14 +9,15 @@ namespace Generic.BusinessLogic.User
 {
     public interface IUserService
     {
-        UsersDataModel.User GetUser(UsersDataModel.User user);
         void AddUser(UsersDataModel.User user);
 
-        void UpdateUser(UsersDataModel.User user);
+        void UpdateUserNameEmailFields(UsersDataModel.User user);
 
-        void DisableUser(UsersDataModel.User user);
+        void DisableUser(string username);
 
-        bool DoesUserExist(UsersDataModel.User user);
+        bool DoesUserExist(string username);
+
+        void DeleteUser(string username);
 
         UsersDataModel.User GetUserByUsername(string username);
     }
@@ -47,30 +50,30 @@ namespace Generic.BusinessLogic.User
             };
         }
 
-        public UsersDataModel.User GetUser(UsersDataModel.User user)
-        {
-            var rowKey = string.Format("{0}_{1}{2}", 
-                user.Username.ToLower().Trim(), 
-                user.FirstName.ToLower().Trim(), 
-                user.LastName.ToLower().Trim());
+        //public UsersDataModel.User GetUser(UsersDataModel.User user)
+        //{
+        //    var rowKey = string.Format("{0}_{1}{2}", 
+        //        user.Username.ToLower().Trim(), 
+        //        user.FirstName.ToLower().Trim(), 
+        //        user.LastName.ToLower().Trim());
 
-            var existUser = _userRepository.GetByPartitionKeyAndRowKey(user.Username, rowKey);
+        //    var existUser = _userRepository.GetByPartitionKeyAndRowKey(user.Username, rowKey);
 
-            if (existUser != null)
-            {
-                return new UsersDataModel.User
-                {
-                    Email = existUser.Email,
-                    FirstName = existUser.Email,
-                    IsActive = existUser.IsActive,
-                    LastName = existUser.LastName,
-                    PasswordHash = existUser.PasswordHash,
-                    Username = existUser.Username
-                };
-            }
+        //    if (existUser != null)
+        //    {
+        //        return new UsersDataModel.User
+        //        {
+        //            Email = existUser.Email,
+        //            FirstName = existUser.Email,
+        //            IsActive = existUser.IsActive,
+        //            LastName = existUser.LastName,
+        //            PasswordHash = existUser.PasswordHash,
+        //            Username = existUser.Username
+        //        };
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         public void AddUser(UsersDataModel.User user)
         {
@@ -78,24 +81,70 @@ namespace Generic.BusinessLogic.User
             _userRepository.Save();
         }
 
-        public void UpdateUser(UsersDataModel.User user)
+        public void UpdateUserNameEmailFields(UsersDataModel.User user)
         {
-            //_userRepository.Update();
-            //_userRepository.Save();
+            var existUser = GetTableModelUser(user.Username);
+
+            if (existUser != null)
+            {
+                existUser.Email = user.Email;
+                existUser.FirstName = user.FirstName;
+                existUser.LastName = user.LastName;
+                
+                _userRepository.Update(existUser);
+                _userRepository.Save();
+            }
         }
 
-        public void DisableUser(UsersDataModel.User user)
+        public void DeleteUser(string username)
         {
-            // Disable user
-            user.IsActive = false;
+            var user = GetTableModelUser(username);
 
-            //_userRepository.Update();
-            _userRepository.Save();
+            if (user != null)
+            {
+                _userRepository.Delete(user);
+                _userRepository.Save();
+            }
         }
 
-        public bool DoesUserExist(UsersDataModel.User user)
+        public void DisableUser(string username)
         {
-            return GetUser(user) == null ? false : true;
+            var user = GetTableModelUser(username);
+
+            if (user != null)
+            {
+                // Disable user
+                user.IsActive = false;
+
+                _userRepository.Update(user);
+                _userRepository.Save();
+            }
+        }
+
+        public bool DoesUserExist(string username)
+        {
+            var user = GetDataModelUser(username);
+            return user == null ? false : true;
+        }
+
+        private TableDataModel.User GetTableModelUser(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException("username");
+            }
+
+            return _userRepository.Find(a => a.Username == username).FirstOrDefault();
+        }
+
+        private UsersDataModel.User GetDataModelUser(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentNullException("username");
+            }
+
+            return GetUserByUsername(username);
         }
     }
 }
