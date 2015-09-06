@@ -11,9 +11,15 @@ namespace Account.BusinessLogic
     public class RegistrationService : IRegistrationService
     {
         private readonly IUserService _userService;
+        
         public RegistrationService()
         {
             _userService = new UserService();
+        }
+
+        public RegistrationService(IUserService userService)
+        {
+            _userService = userService;
         }
 
         public void Register(string username, string firstname, string lastname, string password, string email)
@@ -31,7 +37,7 @@ namespace Account.BusinessLogic
             };
 
             // fail safe in case someone has registered this account after the register check user has been called.
-            if (_userService.GetUser(existUser) == null)
+            if (_userService.GetUserByUsername(existUser.Username) == null)
             {
                 _userService.AddUser(existUser);
             }
