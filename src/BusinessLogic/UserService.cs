@@ -24,56 +24,38 @@ namespace Generic.BusinessLogic.User
 
     public class UserService : IUserService
     {
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         public UserService()
         { 
             _userRepository = new UserRepository();
         }
 
-        public UserService(UserRepository userRepository)
+        public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
         public UsersDataModel.User GetUserByUsername(string username)
         {
-            var user = _userRepository.Find(a => a.Username == username).FirstOrDefault();
+            var user = _userRepository.Find(a => a.Username == username);
 
-            return new UsersDataModel.User
+            if (user != null && user.AsEnumerable().Count() > 0)
             {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                IsActive = user.IsActive,
-                LastName = user.LastName,
-                Username = user.Username,
-                PasswordHash = user.PasswordHash
-            };
+                var foundUser = user.First();
+
+                return new UsersDataModel.User
+                {
+                    Email = foundUser.Email,
+                    FirstName = foundUser.FirstName,
+                    IsActive = foundUser.IsActive,
+                    LastName = foundUser.LastName,
+                    Username = foundUser.Username,
+                    PasswordHash = foundUser.PasswordHash
+                };
+            }
+
+            return null;
         }
-
-        //public UsersDataModel.User GetUser(UsersDataModel.User user)
-        //{
-        //    var rowKey = string.Format("{0}_{1}{2}", 
-        //        user.Username.ToLower().Trim(), 
-        //        user.FirstName.ToLower().Trim(), 
-        //        user.LastName.ToLower().Trim());
-
-        //    var existUser = _userRepository.GetByPartitionKeyAndRowKey(user.Username, rowKey);
-
-        //    if (existUser != null)
-        //    {
-        //        return new UsersDataModel.User
-        //        {
-        //            Email = existUser.Email,
-        //            FirstName = existUser.Email,
-        //            IsActive = existUser.IsActive,
-        //            LastName = existUser.LastName,
-        //            PasswordHash = existUser.PasswordHash,
-        //            Username = existUser.Username
-        //        };
-        //    }
-
-        //    return null;
-        //}
 
         public void AddUser(UsersDataModel.User user)
         {

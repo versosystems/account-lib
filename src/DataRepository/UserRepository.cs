@@ -5,7 +5,12 @@ using VersoSystems.Storage.TableStorage.Account;
 
 namespace Account.DataRepository
 {
-    public class UserRepository : TableStorageRepository<User>
+
+    public interface IUserRepository : ITableStorageRepository<User>
+    {
+    }
+
+    public class UserRepository : TableStorageRepository<User>, IUserRepository
     {
         public UserRepository()
             : base(new AccountConnection<User>(CloudConfigurationManager.GetSetting("StorageConnectionString")))

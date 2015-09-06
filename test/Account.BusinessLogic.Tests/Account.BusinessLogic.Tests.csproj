@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Account.BusinessLogic.Tests</RootNamespace>
     <AssemblyName>Account.BusinessLogic.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\src\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,8 +33,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FakeItEasy">
+      <HintPath>..\..\src\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\src\packages\Moq.4.2.1507.0118\lib\net40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute">
+      <HintPath>..\..\src\packages\NSubstitute.1.8.2.0\lib\net45\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\src\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
@@ -43,18 +54,48 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="VersoSystems.Framework">
+      <HintPath>..\..\libs\VersoSystems.Framework.1.1.0.0\lib\net451\VersoSystems.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="VersoSystems.Storage.TableStorage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\VersoSystems.Storage.TableStorage.1.0.0.0\lib\net40\VersoSystems.Storage.TableStorage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RegistrationTests.cs" />
+    <Compile Include="IntegrationTests\UserServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\BusinessLogic\Account.BusinessLogic.csproj">
+      <Project>{50ff78b6-0b51-4d1b-8519-8d4bcc3543cb}</Project>
+      <Name>Account.BusinessLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DataModel\Account.DataModel.csproj">
+      <Project>{a21a1ae4-f7c3-4064-96a0-b9a56e4bd4d1}</Project>
+      <Name>Account.DataModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DataRepository\Account.DataRepository.csproj">
+      <Project>{1ab549c4-bdf4-4ceb-9f0e-b0046d7101e0}</Project>
+      <Name>Account.DataRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\TableModel\Account.TableModel.csproj">
+      <Project>{e9f21f01-33e0-4c09-a37f-420cf290b547}</Project>
+      <Name>Account.TableModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UnitTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

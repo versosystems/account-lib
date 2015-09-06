@@ -42,14 +42,14 @@ namespace Account.TableModel
             var firstnameClean = firstName.ToLower().Trim();
             var lastnameClean = lastName.ToLower().Trim();
 
-            this.PartitionKey = usernameClean;
-            this.RowKey = string.Format("{0}_{1}{2}", usernameClean, firstnameClean, lastnameClean);
-
-            this.Username = usernameClean;
-            this.PasswordHash = passwordHash;
-            this.Email = email;
-
-            this.IsActive = isActive;
+            PartitionKey = usernameClean;
+            RowKey = string.Format("{0}_{1}{2}", usernameClean, firstnameClean, lastnameClean);
+            FirstName = firstName;
+            LastName = lastName;
+            Username = usernameClean;
+            PasswordHash = passwordHash;
+            Email = email;
+            IsActive = isActive;
         }
     }
 }

@@ -11,9 +11,15 @@ namespace Account.BusinessLogic
     public class RegistrationService : IRegistrationService
     {
         private readonly IUserService _userService;
+        
         public RegistrationService()
         {
             _userService = new UserService();
+        }
+
+        public RegistrationService(IUserService userService)
+        {
+            _userService = userService;
         }
 
         public void Register(string username, string firstname, string lastname, string password, string email)
